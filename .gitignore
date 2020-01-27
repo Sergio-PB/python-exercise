@@ -25,3 +25,8 @@ node_modules
 # yarn.lock
 
 ## Project-specific files
+### Part 1
+venvp1/
+build/
+dist/
+*.egg-info
