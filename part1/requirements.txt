@@ -1,1 +1,1 @@
-python-exercise==1.1.0
+python-exercise==1.2.0
