@@ -1,23 +1,18 @@
 """Modus part 1 exercise module
 
 Asserts for a palindrome-named project
+May receive in the future a Cloud Formation file. If the file is an YAML file, it is converted to JSON.
 """
 
 import argparse
-
-def reversed_name(name):
-    return name[::-1]
-
-def is_palindrome(name):
-    return name == reversed_name(name)
+from .parser_actions import palindrome, yaml_to_json
 
 def main():
     parser = argparse.ArgumentParser(description="Thank you for asking for help. These tools are used to generate a Django project and convert CloudFormation code from YAML to JSON.")
-    parser.add_argument('name', metavar='project-name', type=str, help='The project name. Must be a palindrome (e.g. tacocat).')
-    
+    parser.add_argument('name', metavar='project-name', action=palindrome(), type=str, help='The project name. Must be a palindrome (e.g. tacocat).')
+    parser.add_argument('--filename', action=yaml_to_json(), type=argparse.FileType('r'), help='Project\'s Cloud Formation file. YAML files will be converted to JSON.')
     args = parser.parse_args()
-    assert is_palindrome(args.name), f'False. The project name is not a palindrome. {args.name} reversed is {reversed_name(args.name)}, they must be equal.'
-
+    
     print('True. The project name is indeed a palindrome.')
     print("This is our Django project generator tool set.")
 
