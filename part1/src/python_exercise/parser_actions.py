@@ -37,6 +37,8 @@ def palindrome():
         def __call__(self, parser, namespace, name, option_string=None):
             if not is_palindrome(name):
                 parser.error(f'False. The project name is not a palindrome. {name} reversed is {reversed_name(name)}, they must be equal.')
+            else:
+                namespace.__setattr__(self.dest, name)
     return CheckPalindromeAction
 
 def yaml_to_json():
