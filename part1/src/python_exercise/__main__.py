@@ -4,8 +4,12 @@ A CLI project to create a Django project.
 Asserts for only palindrome-named project
 May receive in the future a Cloud Formation file. If the file is an YAML file, it is converted to JSON.
 
-For usage information, use help tags -h, --help
+If using a virtual env creates the project outside de virtual env root, in a \'part2\' folder.
+If not using a virtual env creates into a \'./part2\' folder.
+
+For further usage information, use help tags -h, --help
 """
+import os
 import argparse
 import subprocess
 from pathlib import Path
@@ -23,7 +27,14 @@ def main():
 
     if args.execute:
         print('Building a Django project')
-        project_path = f'../part2/{args.name}'
+
+        project_path = os.environ.get('VIRTUAL_ENV', '')
+        if project_path is not '':
+            project_path = '/'.join(project_path.split('/')[:-1])
+        else:
+            project_path = os.getcwd()
+        project_path += f'/part2/{args.name}'
+
         Path(project_path).mkdir(parents=True, exist_ok=True)
         subprocess.call(['django-admin', 'startproject', args.name, project_path])
 
