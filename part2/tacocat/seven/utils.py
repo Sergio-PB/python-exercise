@@ -1,11 +1,11 @@
-BAD_INPUT = 'the input is not a integer-only list'
+ERR_BAD_INPUT = 'The input is in a bad format:{}'
 MINUS_INTEGER = '-'
 EMPTY_STRING = ''
 
 def is_comma(char):
     return char == ','
 
-def is_minus(char):
+def is_minus_symbol(char):
     return char == '-'
 
 def is_empty(string):

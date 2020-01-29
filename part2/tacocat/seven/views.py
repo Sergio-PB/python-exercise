@@ -1,28 +1,48 @@
 from django.shortcuts import render
 
 from .forms import IntListForm
-from .utils import BAD_INPUT, EMPTY_STRING, MINUS_INTEGER, is_comma, is_empty, is_minus, is_value
+from .utils import ERR_BAD_INPUT, EMPTY_STRING, MINUS_INTEGER, is_comma, is_empty, is_minus_symbol, is_value
 
-def get_form(request):
-    int_list = request.GET.get('int_list', '')
-    return_data = {}
-    if int_list is not EMPTY_STRING:
+def find_sum_pairs(string_list, target_sum):
+    """Returns a dict of unique pairs within a list of integers that add up to a given value.
+
+    The integer list must be passed as a string, containing only: digits, minus symbols (-), commas.
+    E.g. 1,3,2,-1,4,5,3,2,6,2,67,-21,6,3
+    If the list if passed in a wrong format raises an error
+
+    Parameters
+    ----------
+    string_list : str
+        The integer list as csv
+    target_sum : int
+        The sum value the pairs should add up to
+    
+    Raises
+    ------
+    ValueError
+        If the list contains illegal characters or if the characters are in an order that can not be parsed as ant integer list
+    """
+    found_pairs = {}
+    if string_list is not EMPTY_STRING:
         possible_pairs = {}
-        found_pairs = {}
         current_value = EMPTY_STRING
 
-        for char in int_list + ',':
+        # trailing comma to parse the last integer
+        for char in string_list + ',':
             if char.isdigit():
                 current_value += char
-            elif is_minus(char):
+            elif is_minus_symbol(char):
                 if is_empty(current_value):
                     current_value = MINUS_INTEGER
                 else:
-                    found_pairs = BAD_INPUT
-                    break
-            elif is_comma(char) and is_value(current_value):
+                    raise ValueError('misplaced minus symbol')
+            elif is_comma(char):
+                if not is_value(current_value):
+                    raise ValueError('misplaced comma')
+
                 integer = int(current_value)
-                pair = 7 - integer
+                pair = target_sum - integer
+                
                 if integer in found_pairs or pair in found_pairs:
                     pass
                 elif pair in possible_pairs and possible_pairs[pair] is None:
@@ -30,12 +50,26 @@ def get_form(request):
                     found_pairs[pair] = integer
                 elif integer not in possible_pairs:
                     possible_pairs[integer] = None
+                
                 current_value = EMPTY_STRING
             else:
-                found_pairs = BAD_INPUT
-                break
+                raise ValueError(f'illegal character \'{char}\'')
             
-        return_data['result'] = found_pairs
+    return found_pairs
+
+
+def get_form(request):
+    TARGET_SUM = 7
+
+    int_list = request.GET.get('int_list', '')
+    return_data = {
+        'form' : IntListForm(data={'int_list' : int_list}),
+        'result' : {}
+        }
     
-    return_data['form'] = IntListForm(data={'int_list' : int_list})
+    try:
+        return_data['result'] = find_sum_pairs(int_list, TARGET_SUM)
+    except ValueError as err:
+        return_data['result'] = ERR_BAD_INPUT.format(err)
+    
     return render(request, 'form.html', return_data)

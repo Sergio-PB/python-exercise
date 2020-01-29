@@ -1,7 +1,7 @@
 import unittest
 from django.test import Client
 
-from .utils import BAD_INPUT, int_list_to_str
+from .utils import ERR_BAD_INPUT, int_list_to_str
 
 class IntListTest(unittest.TestCase):
     def setUp(self):
@@ -34,7 +34,7 @@ class IntListTest(unittest.TestCase):
         response = self.client.get(f'/seven/?int_list={list_param}')
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn(BAD_INPUT.encode(), response.content)
+        self.assertIn(ERR_BAD_INPUT.format('').encode(), response.content)
 
     def test_bad_str(self):
         int_list = [100,'-93',-0,7,0,1,0,0]
@@ -42,7 +42,7 @@ class IntListTest(unittest.TestCase):
         response = self.client.get(f'/seven/?int_list={list_param}')
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn(BAD_INPUT.encode(), response.content)
+        self.assertIn(ERR_BAD_INPUT.format('').encode(), response.content)
 
     def test_bad_alpha(self):
         int_list = [100,'-93a',-0,7,0,1,0,0]
@@ -50,7 +50,7 @@ class IntListTest(unittest.TestCase):
         response = self.client.get(f'/seven/?int_list={list_param}')
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn(BAD_INPUT.encode(), response.content)
+        self.assertIn(ERR_BAD_INPUT.format('').encode(), response.content)
 
     def test_bad_minus(self):
         int_list = [100,'9-3',-0,7,0,1,0,0]
@@ -58,4 +58,4 @@ class IntListTest(unittest.TestCase):
         response = self.client.get(f'/seven/?int_list={list_param}')
         
         self.assertEqual(response.status_code, 200)
-        self.assertIn(BAD_INPUT.encode(), response.content)
+        self.assertIn(ERR_BAD_INPUT.format('').encode(), response.content)
