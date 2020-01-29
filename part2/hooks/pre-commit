@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo - Logging Django runserver output
+
+sh .git/hooks/kill-django.sh &
+
+python part2/tacocat/manage.py runserver > part2/README.md
+
+echo - Done
+
+sleep 2
+
+git add part2/README.md

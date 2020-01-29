@@ -33,3 +33,4 @@ dist/
 *.egg-info
 
 ### Part 2
+__pycache__/
