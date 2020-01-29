@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='python-exercise',
-    version='1.6.0',
+    version='1.6.1',
     description='Simple python project for recruitment',
     maintainer='https://github.com/ModusCreateOrg',
     license='MIT',
