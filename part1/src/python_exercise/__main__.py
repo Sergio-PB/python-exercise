@@ -1,8 +1,10 @@
 """Modus part 1 exercise module
 
 A CLI project to create a Django project.
-Asserts for only palindrome-named project
+
+Asserts for only palindrome-named project.
 May receive in the future a Cloud Formation file. If the file is an YAML file, it is converted to JSON.
+May also receive apps names for creating the initial Django app files.
 
 If using a virtual env creates the project outside de virtual env root, in a \'part2\' folder.
 If not using a virtual env creates into a \'./part2\' folder.
@@ -20,6 +22,7 @@ def main():
     parser.add_argument('name', metavar='project_name', action=palindrome(), type=str, help='The project name. Must be a palindrome (e.g. tacocat).')
     parser.add_argument('-f', '--filename', action=yaml_to_json(), type=argparse.FileType('r'), help='Project\'s Cloud Formation file. YAML files will be converted to JSON.')
     parser.add_argument('-e', '--execute', default=False, action='store_true', help='With validation, creates a Django project with the given name.')
+    parser.add_argument('-a', '--app', nargs='*', help='If a Django project is created, also creates Django apps with the given names. (e.g. --app taco cat).')
     args = parser.parse_args()
     
     print('True. The project name is indeed a palindrome.')
@@ -37,6 +40,12 @@ def main():
 
         Path(project_path).mkdir(parents=True, exist_ok=True)
         subprocess.call(['django-admin', 'startproject', args.name, project_path])
+        if args.app is not None:
+            for app_name in args.app:
+                app_path = f'{project_path}/{app_name}'
+                Path(app_path).mkdir(parents=True, exist_ok=True)
+                subprocess.call(['django-admin', 'startapp', app_name, app_path])
+
 
 if __name__ == '__main__':
     main()
